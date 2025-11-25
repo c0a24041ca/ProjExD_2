@@ -26,6 +26,7 @@ def main():
     bb_rct = bb_img.get_rect()
     kk_rct.centerx = random.randint(0,WIDTH)
     kk_rct.centery = random.randint(0,HEIGHT)
+    vx, vy = +5, +5
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -51,6 +52,8 @@ def main():
                 sum_mv[1] += mv[1] #横方向
         kk_rct.move_ip(sum_mv)
         screen.blit(kk_img, kk_rct)
+        bb_rct.move_ip(vx, vy)
+        screen.blit(bb_img, bb_rct)
         pg.display.update()
         tmr += 1
         clock.tick(50)
