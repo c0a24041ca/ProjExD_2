@@ -54,28 +54,21 @@ def prep_bombs() -> tuple[list, list]:
     return bb_imgs, bb_accs
 
 def get_kk_imgs() -> dict[tuple[int, int], pg.Surface]:
-
-    kk_img0 = pg.image.load("fig/3.png") 
-    kk_dict = {
-        (0, 0): pg.transform.rotozoom(kk_img0, 0, 0.9), # 停止時
-    }
-   
-    kk_dict[(+5, 0)] = pg.transform.rotozoom(kk_img0, 0, 0.9) # 右
-    kk_dict[(-5, 0)] = pg.transform.rotozoom(kk_img0, 0, 0.9) # 左
- 
-    kk_dict[(0, -5)] = pg.transform.rotozoom(kk_img0, -90, 0.9) # 上
-    kk_dict[(0, +5)] = pg.transform.rotozoom(kk_img0, 90, 0.9) # 下
-
-    kk_dict[(+5, -5)] = pg.transform.rotozoom(kk_img0, 45, 0.9) # 右上
-    kk_dict[(-5, -5)] = pg.transform.rotozoom(kk_img0, 135, 0.9) # 左上
-    kk_dict[(+5, +5)] = pg.transform.rotozoom(kk_img0, -45, 0.9) # 右下
-    kk_dict[(-5, +5)] = pg.transform.rotozoom(kk_img0, -135, 0.9) # 左下
-
+    kk_img0 = pg.image.load("fig/3.png")
+    kk_dict = {}
+    kk_dict[(0, 0)] = pg.transform.rotozoom(kk_img0, 0, 0.9)
+    kk_dict[(-5, 0)] = kk_dict[(0, 0)]
+    kk_dict[(+5, 0)] = kk_dict[(0, 0)]
+    kk_dict[(0, -5)] = pg.transform.rotozoom(kk_img0, -90, 0.9)
+    kk_dict[(0, +5)] = pg.transform.rotozoom(kk_img0, 90, 0.9)
+    kk_dict[(+5, -5)] = pg.transform.rotozoom(kk_img0, 45, 0.9)
+    kk_dict[(-5, -5)] = pg.transform.rotozoom(kk_img0, 135, 0.9)
+    kk_dict[(+5, +5)] = pg.transform.rotozoom(kk_img0, -45, 0.9)
+    kk_dict[(-5, +5)] = pg.transform.rotozoom(kk_img0, -135, 0.9)
     for y, x in [(-5, -5), (-5, +5), (+5, -5), (+5, +5)]:
         # 左右+上下
         if y != 0 and x != 0:
             kk_dict[(y, x)] = kk_dict[y, x] # 斜め移動
-    
     for y in [0, -5, +5]:
         for x in [0, -5, +5]:
             if (x, y) not in kk_dict:
@@ -85,8 +78,8 @@ def get_kk_imgs() -> dict[tuple[int, int], pg.Surface]:
                 elif x == 0 and y != 0:
                     kk_dict[(x, y)] = kk_dict[(0, y)]
                 elif x != 0 and y != 0:
+                    # 斜めはすでに定義済みだが念のため
                     pass
-    
     return kk_dict
 
 def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]) -> tuple[float, float]:
@@ -171,11 +164,6 @@ def main():
         old_center = bb_rct.center
         bb_rct = current_bb_img.get_rect()
         bb_rct.center = old_center
-        vx, vy = calc_orientation(bb_rct, kk_rct, (vx, vy))
-        acc = bb_accs[level]
-        avx = vx * acc
-        avy = vy * acc
-        bb_rct.move_ip(avx, avy)
         yoko, tate = check_bound(bb_rct)
         if not yoko:
             avx *= -1
